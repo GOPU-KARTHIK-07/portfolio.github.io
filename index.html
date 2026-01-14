@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K.Gopu // Systems Engineer</title>
+
+  <!-- Fonts: Inter (Body) & JetBrains Mono (Code/Heading) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --text-main: #e0e0e0;
+      --text-dim: #888888;
+      --accent: #ffffff;
+      /* Clean white for high precision */
+      --line: #222222;
+      --highlight: #00ff9d;
+      /* Subtle digital green */
+
+      --font-body: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --container-bg: linear-gradient(to right, rgba(10, 10, 10, 0.9), transparent);
+    }
+
+    /* ===== SCHEMATIC MODE (LIGHT) ===== */
+    body.light-mode {
+      --bg: #ffffff;
+      --text-main: #111827;
+      /* Deep charcoal for elegance */
+      --text-dim: #555555;
+      --line: #e2e8f0;
+      --highlight: #2563eb;
+      /* "Blueprint Blue" */
+      --accent: #000000;
+
+      /* Pure, graceful white fade */
+      --container-bg: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.85));
+
+      background-image:
+        radial-gradient(#e5e7eb 1px, transparent 1px);
+      background-size: 24px 24px;
+      /* Dotted grid is more elegant than lines */
+    }
+
+    /* GLOBAL SPOTLIGHT */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 1;
+      /* Overlay on background */
+      mix-blend-mode: overlay;
+    }
+
+    body.light-mode::before {
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(37, 99, 235, 0.08) 0%, transparent 40%);
+    }
+
+    /* Cinematic Text Bloom */
+    h1,
+    .bracket-logo {
+      text-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+    }
+
+    body.light-mode h1,
+    body.light-mode .bracket-logo {
+      text-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Light Mode Graceful Image */
+    body.light-mode .profile-img {
+      filter: grayscale(100%) brightness(1.1) contrast(1.1);
+      border-color: rgba(0, 0, 0, 0.1);
+      /* Subtle dark border */
+      box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.15);
+      mix-blend-mode: normal;
+      /* Fix: Show image as is, no multiply */
+      border-radius: 4px;
+      /* Slight roundness if square */
+    }
+
+
+    body.light-mode .profile-img:hover {
+      filter: grayscale(0%);
+      box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25);
+      transform: translateY(-5px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ===== BACKGROUND CANVA ===== */
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ===== EARTH HORIZON (SUBTLE & ELEGANT) ===== */
+    .earth-horizon {
+      position: fixed;
+      bottom: -40vh;
+      /* Lower it significantly */
+      left: -20%;
+      width: 140%;
+      height: 80vh;
+      /* Taller but pushed down */
+      background: radial-gradient(50% 100% at 50% 0%, rgba(0, 186, 160, 0.15), transparent 70%);
+      /* Very subtle Cyan tint */
+      /* Secondary glow for depth */
+      box-shadow: 0 -100px 200px rgba(0, 100, 255, 0.05);
+
+      opacity: 0.6;
+      z-index: -1;
+      filter: blur(80px);
+      /* Massive blur for uniform softness */
+      pointer-events: none;
+      transition: all 1s ease;
+    }
+
+    body.light-mode .earth-horizon {
+      /* Light Mode: Just a whisper of blue at the bottom */
+      background: radial-gradient(50% 100% at 50% 0%, rgba(37, 99, 235, 0.08), transparent 60%);
+      filter: blur(60px);
+      opacity: 1;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+      border-left: 1px solid var(--line);
+      /* border-right: 1px solid var(--line); */
+      /* Optional: boxed look */
+      min-height: 100vh;
+      background: var(--container-bg);
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1,
+    h2,
+    h3,
+    .mono {
+      font-family: var(--font-code);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--text-dim);
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--highlight);
+      border-color: var(--highlight);
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      padding: 40px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 80px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--text-dim);
+      padding: 8px 16px;
+      font-family: var(--font-code);
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--highlight);
+      color: var(--highlight);
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--highlight);
+      width: 0%;
+      z-index: 9999;
+      transition: width 0.1s;
+    }
+
+    /* ===== SCROLL COMPANION ===== */
+    #companion-container {
+      position: fixed;
+      right: 32px;
+      top: 0;
+      height: 100vh;
+      width: 40px;
+      z-index: 1000;
+      pointer-events: none;
+      /* Let clicks pass through */
+    }
+
+    #camera-drone {
+      position: absolute;
+      top: 10%;
+      /* Start offset */
+      left: 0;
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 10px var(--highlight));
+      transition: top 0.1s linear, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      /* Fix Interaction */
+      pointer-events: auto;
+      /* Enable clicks */
+      cursor: pointer;
+    }
+
+    .drone-svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text-main);
+      overflow: visible;
+      /* Allow flame to stick out */
+    }
+
+    /* Rocket Body */
+    .rocket-body {
+      fill: var(--text-main);
+    }
+
+    .rocket-window {
+      fill: var(--bg);
+    }
+
+    /* Sparkle Animation */
+    .sparkle {
+      fill: var(--highlight);
+      transform-origin: center;
+      animation: twinkle 0.8s ease-in-out infinite alternate;
+    }
+
+    .sparkle-1 {
+      animation-delay: 0s;
+    }
+
+    .sparkle-2 {
+      animation-delay: 0.2s;
+    }
+
+    .sparkle-3 {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes twinkle {
+      0% {
+        transform: scale(0.5) translateY(0);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(1.2) translateY(3px);
+        opacity: 1;
+      }
+    }
+
+    /* Hover (Bobbing) */
+    @keyframes bob {
+      0% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    #camera-drone.idle {
+      animation: bob 2s ease-in-out infinite;
+    }
+
+
+
+    .brand {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--highlight);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--highlight);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 80px 0 120px;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .hero-text {
+      flex: 1;
+    }
+
+    .hero-profile {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .profile-img {
+      width: 260px;
+      height: auto;
+      filter: grayscale(100%) brightness(0.9) contrast(1.1);
+      border: 1px solid var(--line);
+      transition: all 0.4s ease;
+      display: block;
+    }
+
+    .profile-img:hover {
+      filter: grayscale(0%);
+      border-color: var(--text-dim);
+      box-shadow: 0 0 30px rgba(0, 255, 157, 0.05);
+      /* very subtle highlight bloom */
+    }
+
+    /* Tech corners for image */
+    .hero-profile::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      border-bottom: 2px solid var(--highlight);
+      border-right: 2px solid var(--highlight);
+    }
+
+    .label {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 32px;
+      letter-spacing: -1px;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      max-width: 600px;
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      margin-bottom: 140px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .section-num {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* ===== GRID/LISTS ===== */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .tech-item {
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.01);
+      transition: background 0.3s;
+    }
+
+    .tech-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--text-dim);
+    }
+
+    .project-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-item {
+      display: group;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--line);
+      /* Card border */
+      background: rgba(255, 255, 255, 0.01);
+      transition: transform 0.1s, box-shadow 0.3s;
+      /* Fast transform for tilt */
+
+      /* Tilt 3D Setup */
+      transform-style: preserve-3d;
+      transform: perspective(1000px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glare Effect */
+    .project-item::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .project-item:hover::after {
+      opacity: 1;
+    }
+
+    /* Magnetic Button Class */
+    .theme-toggle {
+      display: inline-block;
+      transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .project-title {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    .project-tech {
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .project-desc {
+      color: var(--text-dim);
+      max-width: 600px;
+      font-size: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--line);
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 40px;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .profile-img {
+        width: 120px;
+      }
+
+      .container {
+        border: none;
+        padding: 0 20px;
+      }
+
+      .project-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .system-hud {
+        display: none;
+        /* Hide HUD on mobile */
+      }
+    }
+
+    /* ===== SYSTEM HUD ===== */
+    .system-hud {
+      position: fixed;
+      bottom: 24px;
+      left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      z-index: 1000;
+      pointer-events: none;
+
+      /* Glass Widget Style to fix overlap issues */
+      background: rgba(15, 15, 15, 0.8);
+      /* Dark glass */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      padding: 12px;
+      border-radius: 4px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    body.light-mode .system-hud {
+      background: rgba(255, 255, 255, 0.8);
+      /* Light glass */
+      border-color: var(--line);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .hud-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      min-width: 140px;
+    }
+
+    .hud-label {
+      color: var(--highlight);
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    .hud-value {
+      color: var(--text-main);
+      text-align: right;
+    }
+
+    /* ===== ACTIVE RETICLE ===== */
+    .reticle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      transition: all 0.2s ease-out;
+      opacity: 0;
+    }
+
+    .reticle-corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--highlight);
+      box-shadow: 0 0 4px var(--highlight);
+    }
+
+    .tl {
+      top: -4px;
+      left: -4px;
+      border-right: 0;
+      border-bottom: 0;
+    }
+
+    .tr {
+      top: -4px;
+      right: -4px;
+      border-left: 0;
+      border-bottom: 0;
+    }
+
+    .bl {
+      bottom: -4px;
+      left: -4px;
+      border-right: 0;
+      border-top: 0;
+    }
+
+    .br {
+      bottom: -4px;
+      right: -4px;
+      border-left: 0;
+      border-top: 0;
+    }
+
+    /* ===== NEURAL LINK CHAT ===== */
+    .chat-container {
+      position: fixed;
+      bottom: 80px;
+      right: 32px;
+      width: 320px;
+      height: 400px;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 2000;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .chat-container.active {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .chat-header {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--highlight);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* LIGHT MODE CHAT */
+    body.light-mode .chat-container {
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .chat-header {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-main);
+    }
+
+    body.light-mode .msg.bot {
+      background: rgba(0, 0, 0, 0.05);
+      color: #000;
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .chat-input {
+      color: #000;
+    }
+
+    body.light-mode .send-btn {
+      color: var(--highlight);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .msg {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      line-height: 1.4;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      color: var(--text-dim);
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: var(--highlight);
+      color: #000;
+      font-weight: 500;
+    }
+
+    .chat-input-area {
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      outline: none;
+    }
+
+    .send-btn {
+      color: var(--highlight);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* Rocket Clickable */
+    #companion-container {
+      cursor: pointer;
+      /* Indication it's interactive */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 3D Background -->
+  <div id="canvas-container"></div>
+  <div class="earth-horizon"></div>
+
+  <!-- SYSTEM HUD -->
+  <div class="system-hud">
+    <div class="hud-line">
+      <span class="hud-label">POS</span>
+      <span class="hud-value" id="hud-pos">Y: 0000</span>
+    </div>
+    <div class="hud-line">
+      <span class="hud-label">MS</span>
+      <span class="hud-value" id="hud-mouse">X: 000 Y: 000</span>
+    </div>
+    <div class="hud-line">
+      <span class="hud-label">CLK</span>
+      <span class="hud-value" id="hud-time">00:00:00 UTC</span>
+    </div>
+  </div>
+
+  <!-- ACTIVE RETICLE -->
+  <div class="reticle" id="reticle">
+    <div class="reticle-corner tl"></div>
+    <div class="reticle-corner tr"></div>
+    <div class="reticle-corner bl"></div>
+    <div class="reticle-corner br"></div>
+  </div>
+
+  <!-- NEURAL LINK CHAT -->
+  <div class="chat-container" id="chat-interface">
+    <div class="chat-header">
+      <span>:: SYSTEM_AI_LINK</span>
+      <span style="cursor:pointer" onclick="toggleChat()">[X]</span>
+    </div>
+    <div class="chat-messages" id="chat-history">
+      <div class="msg bot">System online. How can I assist you?</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Enter command..." autocomplete="off">
+      <button class="send-btn" id="chat-send">></button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="scroll-progress" id="progress-bar"></div>
+
+    <!-- DRONE COMPANION -->
+    <div id="companion-container">
+      <div id="camera-drone" class="idle">
+        <!-- Cute Retro Rocket SVG -->
+        <svg viewBox="0 0 24 36" class="drone-svg">
+          <!-- Sparkle Trail -->
+          <!-- Center Large -->
+          <path d="M12 24 L13 27 L16 28 L13 29 L12 32 L11 29 L8 28 L11 27 Z" class="sparkle sparkle-1" />
+          <!-- Left Small -->
+          <path d="M7 23 L8 25 L10 25.5 L8 26 L7 28 L6 26 L4 25.5 L6 25 Z" class="sparkle sparkle-2" />
+          <!-- Right Medium -->
+          <path d="M17 23 L18 25 L20 25.5 L18 26 L17 28 L16 26 L14 25.5 L16 25 Z" class="sparkle sparkle-3" />
+
+          <!-- Body -->
+          <path d="M12 2 C7 2 7 10 7 14 L5 18 L7 18 L7 22 L17 22 L17 18 L19 18 L17 14 C17 10 17 2 12 2 Z"
+            class="rocket-body" />
+
+          <!-- Window -->
+          <circle cx="12" cy="12" r="2.5" class="rocket-window" />
+        </svg>
+      </div>
+    </div>
+
+    <header>
+      <div class="brand bracket-logo">&lt;KARTHIK.GOPU /&gt;</div>
+      <div style="display: flex; gap: 24px; align-items: center;">
+        <div class="status">
+          <div class="status-dot"></div>
+          <span class="mono">SYSTEM ONLINE</span>
+        </div>
+        <button id="theme-btn" class="theme-toggle">[LIGHT_MODE]</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-text">
+          <span class="label" id="typewriter"></span>
+          <h1 class="hero-title scramble-text" data-text="Architecting Precision">
+            Architecting Precision
+          </h1>
+          <h1 class="hero-title scramble-text" data-text="Digital Infrastructures.">
+            Digital Infrastructures.
+          </h1>
+          <p class="hero-desc">
+            Senior Associate Engineer dedicated to building scalable, high-performance web systems.
+            Focusing on minimalism, efficiency, and code quality.
+          </p>
+        </div>
+        <div class="hero-profile">
+          <img src="profile.jpg" alt="Karthik Gopu" class="profile-img">
+        </div>
+      </section>
+
+      <!-- EXPERTISE -->
+      <section id="expertise">
+        <div class="section-header">
+          <span class="section-num">01.</span>
+          <h2 class="section-title">Technical Specifications</h2>
+        </div>
+        <div class="tech-grid">
+          <div class="tech-item">JavaScript (ES6+)</div>
+          <div class="tech-item">TypeScript</div>
+          <div class="tech-item">React / Next.js</div>
+          <div class="tech-item">Angular</div>
+          <div class="tech-item">Node.js</div>
+          <div class="tech-item">System Design</div>
+          <div class="tech-item">AWS / Cloud</div>
+          <div class="tech-item">Security</div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="work">
+        <div class="section-header">
+          <span class="section-num">02.</span>
+          <h2 class="section-title">Execution Logs</h2>
+        </div>
+
+        <div class="project-list">
+          <article class="project-item">
+            <div class="project-header">
+              <h3 class="project-title">Enterprise Analytics Platform</h3>
+              <span class="project-tech">[REACT • D3.JS • WEBSOCKETS]</span>
+            </div>
+            <p class="project-desc">
+              Engineered a real-time data visualization dashboard handling 10k+ concurrent streams.
+              Optimized rendering performance by 40% using virtualized lists and canvas.
+            </p>
+          </article>
+
+          <article class="project-item">
+            <div class="project-header">
+              <h3 class="project-title">Secure Banking Module</h3>
+              <span class="project-tech">[TYPESCRIPT • NODE • OAUTH]</span>
+            </div>
+            <p class="project-desc">
+              Developed core security microservices for identity verification and OTP management.
+              Achieved 99.9% uptime and SOC2 compliance.
+            </p>
+          </article>
+
+          <article class="project-item">
+            <div class="project-header">
+              <h3 class="project-title">Design System Core</h3>
+              <span class="project-tech">[CSS VARS • WEB COMPONENTS]</span>
+            </div>
+            <p class="project-desc">
+              Architected a framework-agnostic component library used across 5+ internal products.
+              Enforced strict accessibility (WCAG 2.1) standards.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONNECT -->
+      <section id="connect">
+        <div class="section-header">
+          <span class="section-num">03.</span>
+          <h2 class="section-title">Uplink</h2>
+        </div>
+        <p class="hero-desc" style="margin-bottom: 24px;">
+          Open for collaboration on complex engineering challenges.
+        </p>
+        <div class="mono">
+          <a href="#">mailto:your.email@example.com</a><br /><br />
+          <a href="#">github.com/karthikgopu</a> &nbsp;/&nbsp;
+          <a href="#">linkedin.com/in/karthikgopu</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© 2026 KARTHIK GOPU</span>
+      <span>RENDER TIME: 0.04ms</span>
+    </footer>
+  </div>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // ===== ENGINEERING PARTICLE NETWORK =====
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    camera.position.z = 100;
+
+    // Particles
+    const particleCount = 150;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 300;     // x
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 200;   // y
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 100;   // z
+
+      velocities.push({
+        x: (Math.random() - 0.5) * 0.05,
+        y: (Math.random() - 0.5) * 0.05,
+        z: (Math.random() - 0.5) * 0.05
+      });
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    // Material for Dots
+    const material = new THREE.PointsMaterial({
+      color: 0x444444,
+      size: 1.5,
+      transparent: true,
+      opacity: 0.8
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Connecting Lines
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0x222222,
+      transparent: true,
+      opacity: 0.3
+    });
+
+    // Mouse Interaction
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (event) => {
+      // 1. Three.js coords
+      mouseX = (event.clientX - windowHalfX);
+      mouseY = (event.clientY - windowHalfY);
+
+      // 2. CSS Global Spotlight coords
+      document.body.style.setProperty('--mouse-x', event.clientX + 'px');
+      document.body.style.setProperty('--mouse-y', event.clientY + 'px');
+    });
+
+    // Animation Loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      // TIGHTER CONTROL (Reduced lag)
+      // Lerp factor increased 0.05 -> 0.15 makes it snappier
+      targetX = mouseX * 0.06;
+      targetY = mouseY * 0.06;
+
+      camera.position.x += (targetX - camera.position.x) * 0.15;
+      camera.position.y += (-targetY - camera.position.y) * 0.15;
+      camera.lookAt(scene.position);
+
+      const posAttribute = geometry.attributes.position;
+
+      // Update particles
+      for (let i = 0; i < particleCount; i++) {
+        // Move
+        posAttribute.array[i * 3] += velocities[i].x;
+        posAttribute.array[i * 3 + 1] += velocities[i].y;
+        posAttribute.array[i * 3 + 2] += velocities[i].z;
+
+        // Boundary Check (Simple bounce)
+        if (Math.abs(posAttribute.array[i * 3]) > 150) velocities[i].x *= -1;
+        if (Math.abs(posAttribute.array[i * 3 + 1]) > 100) velocities[i].y *= -1;
+        if (Math.abs(posAttribute.array[i * 3 + 2]) > 50) velocities[i].z *= -1;
+      }
+      posAttribute.needsUpdate = true;
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    /* ===== INTERFACE LOGIC ===== */
+
+    // 1. Theme Toggle
+    const themeBtn = document.getElementById('theme-btn');
+    const body = document.body;
+    let isLight = false;
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        isLight = !isLight;
+        if (isLight) {
+          body.classList.add('light-mode');
+          themeBtn.innerText = "[DARK_MODE]";
+          material.color.setHex(0x222222); // Dark dots for light BG
+        } else {
+          body.classList.remove('light-mode');
+          themeBtn.innerText = "[LIGHT_MODE]";
+          material.color.setHex(0x444444); // Light dots for dark BG
+        }
+      });
+    }
+
+    // 2. Typewriter Effect
+    const typeTarget = document.getElementById('typewriter');
+    const typeText = ":: INITIALIZING_INTERFACE";
+    let typeIdx = 0;
+
+    function typeWriter() {
+      if (typeIdx < typeText.length && typeTarget) {
+        typeTarget.innerHTML += typeText.charAt(typeIdx);
+        typeIdx++;
+        setTimeout(typeWriter, 50); // Speed
+      }
+    }
+    // Start after small delay
+    setTimeout(typeWriter, 500);
+
+    // 3. Scroll Progress
+    const progressBar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (progressBar) progressBar.style.width = scrolled + "%";
+
+      // Update Drone Position
+      const drone = document.getElementById('camera-drone');
+      if (drone) {
+        // Map 0-100% scroll to 10-90% viewport height
+        const dronePos = 10 + (scrolled * 0.8);
+        drone.style.top = dronePos + "%";
+
+        // Rotation based on direction
+        if (scrolled > lastScroll) {
+          // Down
+          drone.style.transform = "rotate(180deg)";
+          drone.classList.remove('idle');
+        } else if (scrolled < lastScroll) {
+          // Up (Normal flight)
+          drone.style.transform = "rotate(0deg)";
+          drone.classList.remove('idle');
+        }
+
+        // Reset to idle if stopped (debounce)
+        clearTimeout(isScrolling);
+        isScrolling = setTimeout(() => {
+          drone.classList.add('idle');
+          drone.style.transform = "rotate(0deg)";
+        }, 200);
+
+        lastScroll = scrolled;
+      }
+
+      // Update HUD Scroll Position
+      const hudPos = document.getElementById('hud-pos');
+      if (hudPos) hudPos.innerText = `Y: ${Math.round(winScroll).toString().padStart(4, '0')}`;
+    });
+
+    let lastScroll = 0;
+    let isScrolling;
+
+    // 5. System HUD Updates (Time & Mouse)
+    const hudTime = document.getElementById('hud-time');
+    const hudMouse = document.getElementById('hud-mouse');
+
+    // Time Loop
+    setInterval(() => {
+      if (hudTime) {
+        const now = new Date();
+        hudTime.innerText = now.toISOString().split('T')[1].split('.')[0] + " UTC";
+      }
+    }, 1000);
+
+    // Mouse Tracking for HUD
+    document.addEventListener('mousemove', (e) => {
+      if (hudMouse) {
+        hudMouse.innerText = `X: ${e.clientX.toString().padStart(3, '0')} Y: ${e.clientY.toString().padStart(3, '0')}`;
+      }
+    });
+
+    // 4. Text Scramble Effect (The "Extra" Polish)
+    // Decodes random characters into final text
+    const scrambleElements = document.querySelectorAll('.scramble-text');
+    const chars = '!<>-_\\/[]{}—=+*^?#';
+
+    class ScrambleFx {
+      constructor(el) {
+        this.el = el;
+        this.finalText = el.getAttribute('data-text');
+        this.frame = 0;
+        this.queue = [];
+
+        for (let i = 0; i < this.finalText.length; i++) {
+          const from = this.finalText[i];
+          const start = Math.floor(Math.random() * 20);
+          const end = start + Math.floor(Math.random() * 20);
+          this.queue.push({ from, start, end, char: from });
+        }
+
+        this.update = this.update.bind(this);
+        this.update();
+      }
+
+      update() {
+        let output = '';
+        let complete = 0;
+
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, start, end, char } = this.queue[i];
+
+          if (this.frame >= end) {
+            complete++;
+            output += from;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = chars[Math.floor(Math.random() * chars.length)];
+              this.queue[i].char = char;
+            }
+            output += `<span style="color:var(--highlight); opacity: 0.5">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+
+        this.el.innerHTML = output;
+
+        if (complete === this.queue.length) return; // Done
+
+        this.frame++;
+        requestAnimationFrame(this.update);
+      }
+    }
+
+    // Trigger scramble on intersection
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          new ScrambleFx(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+
+    scrambleElements.forEach(el => observer.observe(el));
+
+    // 6. Holographic Tilt Effect
+    const cards = document.querySelectorAll('.project-item');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Set CSS vars for Glare
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+
+        // Calculate Rotation (Max 5deg)
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -5; // Invert Y for tilt
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        card.style.borderColor = "var(--highlight)";
+        card.style.zIndex = "10";
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        card.style.borderColor = "var(--line)";
+        card.style.zIndex = "1";
+      });
+    });
+
+    // 7. Magnetic Button Effect
+    const magneticBtns = document.querySelectorAll('.theme-toggle');
+    magneticBtns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        // Move button towards mouse (Magnetic Pull 40%)
+        btn.style.transform = `translate(${x * 0.4}px, ${y * 0.4}px)`;
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = `translate(0px, 0px)`;
+      });
+    });
+
+    // 8. Active Target Reticle
+    const reticle = document.getElementById('reticle');
+    const interactiveSelector = 'a, button, .project-item, .rocket-body, #companion-container';
+
+    document.addEventListener('mouseover', (e) => {
+      const target = e.target.closest(interactiveSelector);
+      if (target && reticle) {
+        const rect = target.getBoundingClientRect();
+        reticle.style.opacity = '1';
+        reticle.style.top = rect.top + 'px';
+        reticle.style.left = rect.left + 'px';
+        reticle.style.width = rect.width + 'px';
+        reticle.style.height = rect.height + 'px';
+      } else if (reticle) {
+        reticle.style.opacity = '0';
+      }
+    });
+
+    // 9. Neural Link Chat
+    const chatInterface = document.getElementById('chat-interface');
+    // FIX: Attach listener to the DRONE, not the container (container is passthrough)
+    const droneBtn = document.getElementById('camera-drone');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatHistory = document.getElementById('chat-history');
+
+    function toggleChat() {
+      chatInterface.classList.toggle('active');
+      if (chatInterface.classList.contains('active')) {
+        chatInput.focus();
+      }
+    }
+
+    if (droneBtn) droneBtn.addEventListener('click', toggleChat);
+
+    // Chat Logic
+    function handleUserMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // Add User Msg
+      addMessage(text, 'user');
+      chatInput.value = '';
+
+      // Bot Response Simulation
+      setTimeout(() => {
+        const response = getBotResponse(text);
+        addMessage(response, 'bot');
+      }, 600);
+    }
+
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = `msg ${type}`;
+      div.innerText = text;
+      chatHistory.appendChild(div);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function getBotResponse(input) {
+      const lower = input.toLowerCase();
+      if (lower.includes('hello') || lower.includes('hi')) return "Greetings. Systems functional.";
+      if (lower.includes('who')) return "I am the Neural Link Assistant for Karthik's Portfolio.";
+      if (lower.includes('contact') || lower.includes('email')) return "Accessing protocols... You can reach the Admin at [karthik@example.com].";
+      if (lower.includes('skill') || lower.includes('stack')) return "Core systems: React, Node, WebGL, Design Systems.";
+      if (lower.includes('project')) {
+        document.getElementById('work').scrollIntoView({ behavior: 'smooth' });
+        return "Navigating to Mission Logs...";
+      }
+      if (lower.includes('dark') || lower.includes('light') || lower.includes('theme')) {
+        document.getElementById('theme-btn').click();
+        return "Theme configuration updated.";
+      }
+      return "Command not recognized. Try 'Projects', 'Skills', or 'Contact'.";
+    }
+
+    if (chatSend) chatSend.addEventListener('click', handleUserMessage);
+    if (chatInput) chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUserMessage();
+    });
+
+
+
+  </script>
+</body>
+
+</html>
